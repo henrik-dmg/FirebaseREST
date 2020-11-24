@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "HPNetwork",
+        "repositoryURL": "https://github.com/henrik-dmg/HPNetwork",
+        "state": {
+          "branch": null,
+          "revision": "3c26b1a8968eea246b175b33cb254169f02088c9",
+          "version": "0.7.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
