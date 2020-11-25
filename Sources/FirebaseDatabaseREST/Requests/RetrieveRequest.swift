@@ -1,34 +1,28 @@
 import Foundation
 import HPNetwork
 
-final class RetrieveRequest<D: Decodable>: DecodableRequest<D> {
+final class RetrieveRequest<D: Decodable>: DecodableRequest<D>, DatabaseRequest {
 
 	typealias Output = D
 
 	let host: String
 	let pathComponents: [String]
 	let _decoder: JSONDecoder
+	let idToken: String?
 
 	override var url: URL? {
-		guard !pathComponents.isEmpty else {
-			return nil
-		}
-		let pathString = pathComponents.joined(separator: "/") + ".json"
-
-		return URLQueryItemsBuilder(host: host)
-			.addingPathComponent(pathString)
-			.addingQueryItem("pretty", name: "print")
-			.build()
+		makeURL(with: .pretty)
 	}
 
 	override var decoder: JSONDecoder {
 		_decoder
 	}
 
-	init(host: String, pathComponents: [String], decoder: JSONDecoder, finishingQueue: DispatchQueue) {
+	init(host: String, pathComponents: [String], decoder: JSONDecoder, idToken: String?) {
 		self.host = host
 		self.pathComponents = pathComponents
 		self._decoder = decoder
+		self.idToken = idToken
 		super.init(urlString: "")
 	}
 

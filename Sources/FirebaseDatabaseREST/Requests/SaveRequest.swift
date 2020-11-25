@@ -1,7 +1,9 @@
 import Foundation
 import HPNetwork
 
-struct SaveRequest<E: Encodable>: NetworkRequest {
+struct SaveRequest<E: Encodable>: DatabaseRequest {
+
+	typealias Output = Data
 
 	// MARK: - Properties
 
@@ -10,22 +12,12 @@ struct SaveRequest<E: Encodable>: NetworkRequest {
 	let value: E
 	let isUpdate: Bool
 	let encoder: JSONEncoder
-	let finishingQueue: DispatchQueue
+	let idToken: String?
 
 	// MARK: - NetworkRequest
 
-	typealias Output = Data
-
 	var url: URL? {
-		guard !pathComponents.isEmpty else {
-			return nil
-		}
-		let pathString = pathComponents.joined(separator: "/") + ".json"
-
-		return URLQueryItemsBuilder(host: host)
-			.addingPathComponent(pathString)
-			.addingQueryItem("silent", name: "print")
-			.build()
+		makeURL(with: .silent)
 	}
 
 	var httpBody: Data? {
@@ -42,13 +34,20 @@ struct SaveRequest<E: Encodable>: NetworkRequest {
 
 	// MARK: - Init
 
-	init(host: String, pathComponents: [String], value: E, isUpdate: Bool, encoder: JSONEncoder = .init(), finishingQueue: DispatchQueue = .main) {
+	init(
+		host: String,
+		pathComponents: [String],
+		value: E,
+		isUpdate: Bool,
+		encoder: JSONEncoder,
+		idToken: String?
+	) {
 		self.host = host
 		self.pathComponents = pathComponents
 		self.value = value
 		self.isUpdate = isUpdate
 		self.encoder = encoder
-		self.finishingQueue = finishingQueue
+		self.idToken = idToken
 	}
 
 	// MARK: - Helper
