@@ -1,9 +1,11 @@
 import Foundation
 import HPNetwork
 
-struct TokenRefreshRequest: NetworkRequest {
+// https://firebase.google.com/docs/reference/rest/auth/#section-refresh-token
 
-	typealias Output = TokenInformation
+struct TokenRefreshRequest: FirebaseAuthRequest {
+
+	typealias Output = AuthTokenResponse
 
 	struct Payload: Encodable {
 		let refresh_token: String
@@ -27,10 +29,6 @@ struct TokenRefreshRequest: NetworkRequest {
 
 	var httpBody: Data? {
 		try? JSONEncoder().encode(Payload(refresh_token: refreshToken))
-	}
-
-	func convertResponse(response: NetworkResponse) throws -> TokenInformation {
-		try JSONDecoder().decode(FirebaseTokenResponse.self, from: response.data)
 	}
 
 }

@@ -6,18 +6,18 @@ public class DatabaseReference {
 
 	// MARK: - Properties
 
-	typealias TokenResult = (Result<TokenInformation, Error>) -> Void
+	typealias TokenResult = (Result<EmailAuthResponse, Error>) -> Void
 
 	let host: String
-	let emailCredentials: EmailSignInCredentials?
+	let emailCredentials: EmailCredentials?
 	let components: [String]
 
 	private let session: FirebaseAuthSession?
-	private var lastToken: TokenInformation?
+	private var lastToken: EmailAuthResponse?
 
 	// MARK: - Init
 
-	public init(host: String, apiKey: String? = nil, emailCredentials: EmailSignInCredentials? = nil) {
+	public init(host: String, apiKey: String? = nil, emailCredentials: EmailCredentials? = nil) {
 		self.host = host
 		self.emailCredentials = emailCredentials
 		self.components = []
@@ -29,7 +29,7 @@ public class DatabaseReference {
 		}
 	}
 
-	private init(host: String, emailCredentials: EmailSignInCredentials?, components: [String], session: FirebaseAuthSession?) {
+	private init(host: String, emailCredentials: EmailCredentials?, components: [String], session: FirebaseAuthSession?) {
 		self.host = host
 		self.emailCredentials = emailCredentials
 		self.components = components

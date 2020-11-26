@@ -1,9 +1,9 @@
-import HPNetwork
 import Foundation
+import HPNetwork
 
-// https://firebase.google.com/docs/reference/rest/auth/#section-sign-in-email-password
+// https://firebase.google.com/docs/reference/rest/auth/#section-create-email-password
 
-struct EmailSignInRequest: FirebaseAuthRequest {
+struct EmailSignUpRequest: FirebaseAuthRequest {
 
 	typealias Output = EmailAuthResponse
 
@@ -11,7 +11,7 @@ struct EmailSignInRequest: FirebaseAuthRequest {
 	let payload: EmailCredentials
 
 	var url: URL? {
-		URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=\(apiKey)")
+		URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=\(apiKey)")
 	}
 
 	var requestMethod: NetworkRequestMethod {

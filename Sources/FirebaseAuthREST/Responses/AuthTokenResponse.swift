@@ -1,6 +1,6 @@
 import Foundation
 
-public struct FirebaseTokenResponse: TokenInformation {
+public struct AuthTokenResponse: FirebaseToken {
 
 	// MARK: - CodingKeys
 
@@ -19,9 +19,6 @@ public struct FirebaseTokenResponse: TokenInformation {
 	/// The type of the refresh token, always "Bearer".
 	public let tokenType: String
 
-	/// The Firebase Auth refresh token provided in the request or a new refresh token.
-	public let refreshToken: String
-
 	/// The uid corresponding to the provided ID token.
 	public let userID: String
 
@@ -30,10 +27,10 @@ public struct FirebaseTokenResponse: TokenInformation {
 
 	public let accessToken: String
 
-	/// A Firebase Auth ID token.
+	public let refreshToken: String
+
 	public let idToken: String
 
-	/// The expiration date of the `idToken`
 	public let expirationDate: Date
 
 	// MARK: - Init
