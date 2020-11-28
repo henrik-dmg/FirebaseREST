@@ -1,26 +1,31 @@
 import Foundation
 import HPNetwork
 
-struct DeleteRequest: DatabaseRequest {
+public struct DeleteRequest: DatabaseRequest {
 
-	typealias Output = Data
+	public typealias Output = Data
 
 	let host: String
-	let pathComponents: [String]
+	let path: DatabasePath
+	let filter: DatabaseQueryFilter?
 	let idToken: String?
 
-	var url: URL? {
+	public let finishingQueue: DispatchQueue
+
+	public var url: URL? {
 		makeURL(with: .silent)
 	}
 
-	var requestMethod: NetworkRequestMethod {
+	public var requestMethod: NetworkRequestMethod {
 		.delete
 	}
 
-	init(host: String, pathComponents: [String], idToken: String?) {
+	init(host: String, path: DatabasePath, filter: DatabaseQueryFilter?, idToken: String?, finishingQueue: DispatchQueue) {
 		self.host = host
-		self.pathComponents = pathComponents
+		self.path = path
+		self.filter = filter
 		self.idToken = idToken
+		self.finishingQueue = finishingQueue
 	}
 
 }

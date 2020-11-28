@@ -1,7 +1,7 @@
 import Foundation
 import HPNetwork
 
-public struct SaveRequest<E: Encodable>: DatabaseRequest {
+public struct UpdateRequest<E: Encodable>: DatabaseRequest {
 
 	public typealias Output = Data
 
@@ -26,7 +26,7 @@ public struct SaveRequest<E: Encodable>: DatabaseRequest {
 	}
 
 	public var requestMethod: NetworkRequestMethod {
-		.put
+		.patch
 	}
 
 	public var headerFields: [NetworkRequestHeaderField]? {

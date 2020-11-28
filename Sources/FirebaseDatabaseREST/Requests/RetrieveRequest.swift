@@ -1,34 +1,44 @@
 import Foundation
 import HPNetwork
 
-final class RetrieveRequest<D: Decodable>: DecodableRequest<D>, DatabaseRequest {
+public struct RetrieveRequest<D: Decodable>: DatabaseRequest {
 
-	typealias Output = D
+	public typealias Output = D
 
 	let host: String
-	let pathComponents: [String]
-	let _decoder: JSONDecoder
+	let path: DatabasePath
+	let filter: DatabaseQueryFilter?
+	let decoder: JSONDecoder
 	let idToken: String?
+	public let finishingQueue: DispatchQueue
 
-	override var url: URL? {
+	public var url: URL? {
 		makeURL(with: .pretty)
 	}
 
-	override var decoder: JSONDecoder {
-		_decoder
+	public var requestMethod: NetworkRequestMethod {
+		.get
 	}
 
-	init(host: String, pathComponents: [String], decoder: JSONDecoder, idToken: String?) {
+	init(
+		host: String,
+		path: DatabasePath,
+		filter: DatabaseQueryFilter?,
+		decoder: JSONDecoder,
+		idToken: String?,
+		finishingQueue: DispatchQueue
+	) {
 		self.host = host
-		self.pathComponents = pathComponents
-		self._decoder = decoder
+		self.path = path
+		self.filter = filter
+		self.decoder = decoder
 		self.idToken = idToken
-		super.init(urlString: "")
+		self.finishingQueue = finishingQueue
 	}
 
-	override func convertResponse(response: NetworkResponse) throws -> Output {
+	public func convertResponse(response: NetworkResponse) throws -> Output {
 		try validateBytes(response.data)
-		return try super.convertResponse(response: response)
+		return try decoder.decode(D.self, from: response.data)
 	}
 
 	private func validateBytes(_ data: Data) throws {

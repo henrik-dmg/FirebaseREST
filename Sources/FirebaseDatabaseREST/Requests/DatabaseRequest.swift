@@ -4,15 +4,10 @@ import Foundation
 protocol DatabaseRequest: NetworkRequest {
 
 	var host: String { get }
-	var pathComponents: [String] { get }
+	var path: DatabasePath { get }
+	var filter: DatabaseQueryFilter? { get }
 	var idToken: String? { get }
 
-}
-
-protocol NoResponeRequest: DatabaseRequest {
-
-	init(host: String, pathComponents: [String], idToken: String?)
-	
 }
 
 enum PrintMode: String {
@@ -22,10 +17,10 @@ enum PrintMode: String {
 extension DatabaseRequest {
 
 	func makeURL(with printMode: PrintMode) -> URL? {
-		guard !pathComponents.isEmpty else {
+		guard !path.components.isEmpty else {
 			return nil
 		}
-		let pathString = pathComponents.joined(separator: "/") + ".json"
+		let pathString = path.makeEscapedPath() + ".json"
 
 		let builder = URLQueryItemsBuilder(host: host)
 			.addingPathComponent(pathString)

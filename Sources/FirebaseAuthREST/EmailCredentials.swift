@@ -1,6 +1,6 @@
 import Foundation
 
-public struct EmailCredentials: Encodable {
+public struct EmailCredentials: Encodable, Equatable {
 
 	public let email: String
 	public let password: String
