@@ -24,3 +24,4 @@ jobs:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           DATABASE_EMAIL: ${{ secrets.DATABASE_EMAIL }}
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
