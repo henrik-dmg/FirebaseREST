@@ -56,10 +56,8 @@ public struct SaveRequest<E: Encodable>: DatabaseRequest {
 	// MARK: - Helper
 
 	private func encodeToJSON() throws -> Data {
-		if #available(OSX 10.15, iOS 13.0, *) {
-			encoder.outputFormatting = [.prettyPrinted, .withoutEscapingSlashes]
-		} else {
-			encoder.outputFormatting = .prettyPrinted
+		if #available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *) {
+			encoder.outputFormatting = .withoutEscapingSlashes
 		}
 		return try encoder.encode(value)
 	}
