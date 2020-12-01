@@ -15,6 +15,7 @@ extension LosslessStringConvertible {
 }
 
 extension Bool: JSONPrimitive {}
+
 extension Int: JSONPrimitive {}
 extension Int64: JSONPrimitive {}
 extension Int32: JSONPrimitive {}
