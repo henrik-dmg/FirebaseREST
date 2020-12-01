@@ -22,9 +22,13 @@ extension DatabaseRequest {
 		}
 		let pathString = path.makeEscapedPath() + ".json"
 
-		let builder = URLQueryItemsBuilder(host: host)
+		var builder = URLQueryItemsBuilder(host: host)
 			.addingPathComponent(pathString)
 			.addingQueryItem(printMode.rawValue, name: "print")
+
+		filter.flatMap { $0 }?.generateQueryItems().forEach {
+			builder = builder.addingQueryItem($0.value, name: $0.name)
+		}
 
 		if let token = idToken {
 			return builder.addingQueryItem(token, name: "auth").build()

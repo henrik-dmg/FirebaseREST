@@ -33,7 +33,6 @@ public struct EmailAuthResponse: FirebaseToken {
 		refreshToken = try container.decode(String.self, forKey: .refreshToken)
 
 		let expiresString = try container.decode(String.self, forKey: .expiresIn)
-		print(expiresString)
 		guard let expiresSecond = Double(expiresString) else {
 			throw NSError(description: "Could not convert \"\(expiresString)\" to an Integer")
 		}

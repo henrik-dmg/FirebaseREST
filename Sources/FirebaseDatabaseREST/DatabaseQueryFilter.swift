@@ -3,35 +3,53 @@ import Foundation
 public struct DatabaseQueryFilter {
 
 	public enum Mode {
-		case limitToFirst(_ value: CustomStringConvertible)
-		case limitToLast(_ value: CustomStringConvertible)
-		case startAt(_ value: CustomStringConvertible)
-		case endAt(_ value: CustomStringConvertible)
-		case equalTo(_ value: CustomStringConvertible)
+		case limitToFirst(_ value: JSONPrimitive)
+		case limitToLast(_ value: JSONPrimitive)
+		case startAt(_ value: JSONPrimitive)
+		case endAt(_ value: JSONPrimitive)
+		case equalTo(_ value: JSONPrimitive)
+
+		var filterName: String {
+			switch self {
+			case .limitToFirst:
+				return "limitToFirst"
+			case .limitToLast:
+				return "limitToLast"
+			case .startAt:
+				return "startAt"
+			case .endAt:
+				return "endAt"
+			case .equalTo:
+				return "equalTo"
+			}
+		}
+
+		var value: JSONPrimitive {
+			switch self {
+			case .limitToLast(let value), .limitToFirst(let value), .startAt(let value), .endAt(let value), .equalTo(let value):
+				return value
+			}
+		}
 	}
 
-	let childKey: String
-	let mode: Mode
+	private let childKey: String
+	private let filterModes: [Mode]
 
-	public init(childKey: String, mode: DatabaseQueryFilter.Mode) {
+	public init(childKey: String, filterMode: DatabaseQueryFilter.Mode) {
 		self.childKey = childKey
-		self.mode = mode
+		self.filterModes = [filterMode]
+	}
+
+	public init(childKey: String, filterModes: [DatabaseQueryFilter.Mode]) {
+		self.childKey = childKey
+		self.filterModes = filterModes
 	}
 
 	func generateQueryItems() -> [URLQueryItem] {
-		var items = [URLQueryItem(name: "orderBy", value: childKey),]
+		var items = [URLQueryItem(name: "orderBy", value: "\"\(childKey)\""),]
 
-		switch mode {
-		case .limitToFirst(let value):
-			items.append(URLQueryItem(name: "limitToFirst", value: value.description))
-		case .limitToLast(let value):
-			items.append(URLQueryItem(name: "limitToLast", value: value.description))
-		case .startAt(let value):
-			items.append(URLQueryItem(name: "startAt", value: value.description))
-		case .endAt(let value):
-			items.append(URLQueryItem(name: "endAt", value: value.description))
-		case .equalTo(let value):
-			items.append(URLQueryItem(name: "equalTo", value: value.description))
+		for mode in filterModes {
+			items.append(URLQueryItem(name: mode.filterName, value: mode.value.queryRepresentation))
 		}
 
 		return items
