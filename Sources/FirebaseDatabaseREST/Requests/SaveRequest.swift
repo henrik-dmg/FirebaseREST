@@ -62,4 +62,21 @@ public struct SaveRequest<E: Encodable>: DatabaseRequest {
 		return try encoder.encode(value)
 	}
 
+	public func convertResponse(response: NetworkResponse) throws -> Data {
+		guard !response.data.isEmpty else {
+			return response.data
+		}
+		let savingError: SavingError
+		do {
+			savingError = try JSONDecoder().decode(SavingError.self, from: response.data)
+		} catch let error {
+			throw error
+		}
+		throw NSError(description: savingError.error)
+	}
+
+}
+
+struct SavingError: Decodable {
+	let error: String
 }
