@@ -20,3 +20,7 @@ jobs:
       run: swift build -v
     - name: Run tests
       run: swift test -v
+      env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_EMAIL: ${{ secrets.DATABASE_EMAIL }}
