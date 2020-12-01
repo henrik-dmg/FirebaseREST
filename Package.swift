@@ -31,6 +31,9 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
 		.target(
+			name: "TestFoundation"
+		),
+		.target(
 			name: "FirebaseAuthREST",
 			dependencies: [
 				"HPNetwork",
@@ -39,7 +42,8 @@ let package = Package(
 		.testTarget(
 			name: "FirebaseAuthRESTTests",
 			dependencies: [
-				"FirebaseAuthREST"
+				"FirebaseAuthREST",
+				"TestFoundation"
 			]
 		),
 		.target(
@@ -52,7 +56,8 @@ let package = Package(
         .testTarget(
             name: "FirebaseDatabaseRESTTests",
             dependencies: [
-				"FirebaseDatabaseREST"
+				"FirebaseDatabaseREST",
+				"TestFoundation"
 			]
 		)
     ]
