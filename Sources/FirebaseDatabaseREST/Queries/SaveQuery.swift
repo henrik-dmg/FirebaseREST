@@ -8,13 +8,12 @@ public struct SaveQuery<E: Encodable>: DatabaseQuery {
 	public let value: E
 	public let encoder: JSONEncoder
 	public let path: DatabasePath
-	public let filter: DatabaseQueryFilter?
+	public let filter: DatabaseQueryFilter? = nil
 
-	public init(value: E, encoder: JSONEncoder = .init(), path: DatabasePath, filter: DatabaseQueryFilter?) {
+	public init(value: E, encoder: JSONEncoder = .init(), path: DatabasePath) {
 		self.value = value
 		self.encoder = encoder
 		self.path = path
-		self.filter = filter
 	}
 
 }
