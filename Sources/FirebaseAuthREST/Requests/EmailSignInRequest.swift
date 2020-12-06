@@ -9,6 +9,7 @@ struct EmailSignInRequest: FirebaseAuthRequest {
 
 	let apiKey: String
 	let payload: EmailCredentials
+	let finishingQueue: DispatchQueue
 
 	var url: URL? {
 		URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=\(apiKey)")

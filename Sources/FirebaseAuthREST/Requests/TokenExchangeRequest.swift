@@ -14,6 +14,7 @@ struct TokenExchangeRequest: FirebaseAuthRequest {
 
 	let apiKey: String
 	let token: String
+	let finishingQueue: DispatchQueue
 
 	var url: URL? {
 		URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=\(apiKey)")

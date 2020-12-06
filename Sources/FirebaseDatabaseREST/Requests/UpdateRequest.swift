@@ -57,22 +57,24 @@ public struct UpdateRequest<E: Encodable>: DatabaseRequest {
 
 	private func encodeToJSON() throws -> Data {
 		if #available(OSX 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *) {
-			encoder.outputFormatting = .withoutEscapingSlashes
+			encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+		} else {
+			encoder.outputFormatting = [.prettyPrinted]
 		}
 		return try encoder.encode(value)
 	}
 
-	public func convertResponse(response: NetworkResponse) throws -> Data {
-		guard !response.data.isEmpty else {
-			return response.data
+	public func convertError(_ error: Error, data: Data?, response: URLResponse?) -> Error {
+		guard let data = data else {
+			return error
 		}
-		let savingError: SavingError
+
 		do {
-			savingError = try JSONDecoder().decode(SavingError.self, from: response.data)
-		} catch let error {
-			throw error
+			let error = try JSONDecoder().decode(SavingError.self, from: data)
+			return NSError(description: error.error)
+		} catch {
+			return error
 		}
-		throw NSError(description: savingError.error)
 	}
 
 }
