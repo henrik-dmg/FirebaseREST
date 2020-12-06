@@ -29,7 +29,8 @@ final class FirebaseDatabaseClientTests: XCTestCase {
 	func testBasicBGet() {
 		let expectation = XCTestExpectation(description: "Networking finished")
 
-		let database = FirebaseDatabaseClient(host: loginData.host, apiKey: loginData.apiKey)
+		let credentials = EmailCredentials(email: loginData.email, password: loginData.password)
+		let database = FirebaseDatabaseClient(host: loginData.host, apiKey: loginData.apiKey, emailCredentials: credentials)
 		let path = database.path().child("users")
 		let initialUser = User(name: "admin", group: "moreAdmin")
 		let initialUser2 = User(name: "henrik", group: "moreAdmin")
@@ -90,7 +91,8 @@ final class FirebaseDatabaseClientTests: XCTestCase {
 	func testFilterEGet() {
 		let expectation = XCTestExpectation(description: "Networking finished")
 
-		let database = FirebaseDatabaseClient(host: loginData.host, apiKey: loginData.apiKey)
+		let credentials = EmailCredentials(email: loginData.email, password: loginData.password)
+		let database = FirebaseDatabaseClient(host: loginData.host, apiKey: loginData.apiKey, emailCredentials: credentials)
 		let path = database.path().child("users")
 		let initialUser = User(name: "admin", group: "moreAdmin")
 
