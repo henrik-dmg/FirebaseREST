@@ -17,6 +17,10 @@ struct AnonymousSignInRequest: FirebaseAuthRequest {
 		URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=\(apiKey)")
 	}
 
+	var decoder: JSONDecoder {
+		JSONDecoder()
+	}
+
 	var requestMethod: NetworkRequestMethod {
 		.post
 	}

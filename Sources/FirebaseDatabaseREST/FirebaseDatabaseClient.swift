@@ -87,11 +87,11 @@ extension FirebaseDatabaseClient {
 			switch result {
 			case .success(let response):
 				let request = query.makeNetworkRequest(host: host, idToken: response.idToken, finishingQueue: queue)
-				Network.shared.dataTask(request, completion: completion)
+				Network.shared.schedule(request: request, completion: completion)
 			case .failure(let error as NSError):
 				if error == NSError.noSessionError || error == NSError.noCredentialsError {
 					let request = query.makeNetworkRequest(host: host, idToken: nil, finishingQueue: queue)
-					Network.shared.dataTask(request, completion: completion)
+					Network.shared.schedule(request: request, completion: completion)
 				} else {
 					completion(.failure(error))
 				}

@@ -30,7 +30,7 @@ public struct SaveRequest<E: Encodable>: DatabaseRequest {
 	}
 
 	public var headerFields: [NetworkRequestHeaderField]? {
-		[NetworkRequestHeaderField.json]
+		[.json]
 	}
 
 	// MARK: - Init

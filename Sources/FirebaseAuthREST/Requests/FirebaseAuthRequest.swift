@@ -1,7 +1,7 @@
 import Foundation
 import HPNetwork
 
-protocol FirebaseAuthRequest: NetworkRequest {}
+protocol FirebaseAuthRequest: DecodableRequest {}
 
 extension FirebaseAuthRequest where Output: Decodable {
 

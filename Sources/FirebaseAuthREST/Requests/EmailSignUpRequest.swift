@@ -19,6 +19,10 @@ struct EmailSignUpRequest: FirebaseAuthRequest {
 		.post
 	}
 
+	var decoder: JSONDecoder {
+		JSONDecoder()
+	}
+
 	var headerFields: [NetworkRequestHeaderField]? {
 		[.json]
 	}

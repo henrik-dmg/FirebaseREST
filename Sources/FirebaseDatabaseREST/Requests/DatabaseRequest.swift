@@ -22,7 +22,7 @@ extension DatabaseRequest {
 		}
 		let pathString = path.makeEscapedPath() + ".json"
 
-		var builder = URLQueryItemsBuilder(host: host)
+		var builder = URLBuilder(host: host)
 			.addingPathComponent(pathString)
 			.addingQueryItem(printMode.rawValue, name: "print")
 
