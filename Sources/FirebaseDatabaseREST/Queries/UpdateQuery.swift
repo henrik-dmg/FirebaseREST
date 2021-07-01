@@ -23,15 +23,14 @@ public struct UpdateQuery<E: Encodable>: DatabaseQuery {
 
 extension UpdateQuery {
 
-	public func makeNetworkRequest(host: String, idToken: String?, finishingQueue: DispatchQueue) -> UpdateRequest<E> {
+	public func makeNetworkRequest(host: String, idToken: String?) -> UpdateRequest<E> {
 		UpdateRequest(
 			host: host,
 			path: path,
 			filter: filter,
 			value: value,
 			encoder: encoder,
-			idToken: idToken,
-			finishingQueue: finishingQueue
+			idToken: idToken
 		)
 	}
 

@@ -14,11 +14,6 @@ struct TokenRefreshRequest: FirebaseAuthRequest {
 
 	let apiKey: String
 	let refreshToken: String
-	let finishingQueue: DispatchQueue
-
-	var url: URL? {
-		URL(string: "https://securetoken.googleapis.com/v1/token?key=\(apiKey)")
-	}
 
 	var requestMethod: NetworkRequestMethod {
 		.post
@@ -29,11 +24,15 @@ struct TokenRefreshRequest: FirebaseAuthRequest {
 	}
 
 	var headerFields: [NetworkRequestHeaderField]? {
-		[.json]
+		[.contentTypeJSON]
 	}
 
 	var httpBody: Data? {
 		try? JSONEncoder().encode(Payload(refresh_token: refreshToken))
+	}
+
+	func makeURL() throws -> URL {
+		URL(string: "https://securetoken.googleapis.com/v1/token?key=\(apiKey)")!
 	}
 
 }

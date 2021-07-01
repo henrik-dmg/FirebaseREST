@@ -10,22 +10,19 @@ public struct DeleteRequest: DatabaseRequest {
 	let filter: DatabaseQueryFilter?
 	let idToken: String?
 
-	public let finishingQueue: DispatchQueue
-
-	public var url: URL? {
-		makeURL(with: .silent)
-	}
-
 	public var requestMethod: NetworkRequestMethod {
 		.delete
 	}
 
-	init(host: String, path: DatabasePath, filter: DatabaseQueryFilter?, idToken: String?, finishingQueue: DispatchQueue) {
+	init(host: String, path: DatabasePath, filter: DatabaseQueryFilter?, idToken: String?) {
 		self.host = host
 		self.path = path
 		self.filter = filter
 		self.idToken = idToken
-		self.finishingQueue = finishingQueue
+	}
+
+	public func makeURL() throws -> URL {
+		try makeURL(with: .silent)
 	}
 
 }

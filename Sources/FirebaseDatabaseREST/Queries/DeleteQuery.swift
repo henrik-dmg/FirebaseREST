@@ -16,8 +16,8 @@ public struct DeleteQuery: DatabaseQuery {
 
 extension DeleteQuery {
 
-	public func makeNetworkRequest(host: String, idToken: String?, finishingQueue: DispatchQueue) -> DeleteRequest {
-		DeleteRequest(host: host, path: path, filter: filter, idToken: idToken, finishingQueue: finishingQueue)
+	public func makeNetworkRequest(host: String, idToken: String?) -> DeleteRequest {
+		DeleteRequest(host: host, path: path, filter: filter, idToken: idToken)
 	}
 
 }

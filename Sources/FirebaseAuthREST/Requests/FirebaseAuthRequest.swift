@@ -3,13 +3,9 @@ import HPNetwork
 
 protocol FirebaseAuthRequest: DecodableRequest {}
 
-extension FirebaseAuthRequest where Output: Decodable {
+extension FirebaseAuthRequest {
 
-	func convertError(_ error: Error, data: Data?, response: URLResponse?) -> Error {
-		guard let data = data else {
-			return error
-		}
-
+	func convertError(error: URLError, data: Data, response: URLResponse) -> Error {
 		if let authError = try? JSONDecoder().decode(FirebaseAuthError.self, from: data) {
 			return authError.nsError
 		} else {

@@ -3,13 +3,12 @@ import FirebaseAuthREST
 import TestFoundation
 @testable import FirebaseDatabaseREST
 
+@available(macOS 12.0, iOS 15, *)
 final class FirebaseDatabaseClientTests: XCTestCase {
 
 	let loginData = DatabaseLoginData.shared
 
-	func testBasicAWrite() {
-		let expectation = XCTestExpectation(description: "Networking finished")
-
+	func testBasicAWrite() async throws {
 		let credentials = EmailCredentials(email: loginData.email, password: loginData.password)
 		let database = FirebaseDatabaseClient(host: loginData.host, apiKey: loginData.apiKey, emailCredentials: credentials)
 		let path = database.path().child("users")
@@ -18,17 +17,10 @@ final class FirebaseDatabaseClientTests: XCTestCase {
 
 		let saveQuery = SaveQuery(value: [user, user2], path: path)
 
-		database.performQuery(saveQuery) { result in
-			XCTFailIfError(result)
-			expectation.fulfill()
-		}
-
-		wait(for: [expectation], timeout: 10)
+		_ = try await database.performQuery(saveQuery)
 	}
 
-	func testBasicBGet() {
-		let expectation = XCTestExpectation(description: "Networking finished")
-
+	func testBasicBGet() async throws {
 		let credentials = EmailCredentials(email: loginData.email, password: loginData.password)
 		let database = FirebaseDatabaseClient(host: loginData.host, apiKey: loginData.apiKey, emailCredentials: credentials)
 		let path = database.path().child("users")
@@ -37,60 +29,33 @@ final class FirebaseDatabaseClientTests: XCTestCase {
 
 		let retrieveQuery = RetrieveQuery<[User]>(path: path, filter: nil)
 
-		database.performQuery(retrieveQuery) { result in
-			switch result {
-			case .success(let users):
-				XCTAssertEqual(users, [initialUser, initialUser2])
-			case .failure(let error):
-				XCTFail(error.localizedDescription)
-			}
-			expectation.fulfill()
-		}
-		wait(for: [expectation], timeout: 10)
+		let users = try await database.performQuery(retrieveQuery)
+		XCTAssertEqual(users, [initialUser, initialUser2])
 	}
 
-	func testBasicCDeletion() {
-		let expectation = XCTestExpectation(description: "Networking finished")
-
+	func testBasicCDeletion() async throws {
 		let credentials = EmailCredentials(email: loginData.email, password: loginData.password)
 		let database = FirebaseDatabaseClient(host: loginData.host, apiKey: loginData.apiKey, emailCredentials: credentials)
 		let path = database.path().child("users")
 
 		let deleteQuery = DeleteQuery(path: path)
 
-		database.performQuery(deleteQuery) { error in
-			XCTFailIfError(error)
-			expectation.fulfill()
-		}
-
-		wait(for: [expectation], timeout: 10)
+		_ = try await database.performQuery(deleteQuery)
 	}
 
-	func testBasicDWriteQueue() {
-		let queue = DispatchQueue(label: "com.henrikpanhans.TestQueue")
-
-		let expectation = XCTestExpectation(description: "Networking finished")
-
+	func testBasicDWriteQueue() async throws {
 		let credentials = EmailCredentials(email: loginData.email, password: loginData.password)
-		let database = FirebaseDatabaseClient(host: loginData.host, apiKey: loginData.apiKey, emailCredentials: credentials, finishingQueue: queue)
+		let database = FirebaseDatabaseClient(host: loginData.host, apiKey: loginData.apiKey, emailCredentials: credentials)
 		let path = database.path().child("users")
 		let user = User(name: "admin", group: "moreAdmin")
 		let user2 = User(name: "henrik", group: "moreAdmin")
 
 		let saveQuery = SaveQuery(value: [user, user2], path: path)
 
-		database.performQuery(saveQuery) { result in
-			XCTAssertFalse(Thread.current.isMainThread)
-			XCTFailIfError(result)
-			expectation.fulfill()
-		}
-
-		wait(for: [expectation], timeout: 10)
+		_ = try await database.performQuery(saveQuery)
 	}
 
-	func testFilterEGet() {
-		let expectation = XCTestExpectation(description: "Networking finished")
-
+	func testFilterEGet() async throws {
 		let credentials = EmailCredentials(email: loginData.email, password: loginData.password)
 		let database = FirebaseDatabaseClient(host: loginData.host, apiKey: loginData.apiKey, emailCredentials: credentials)
 		let path = database.path().child("users")
@@ -98,16 +63,8 @@ final class FirebaseDatabaseClientTests: XCTestCase {
 
 		let retrieveQuery = RetrieveQuery<[String: User]>(path: path, filter: DatabaseQueryFilter(childKey: "name", filterMode: .equalTo("admin")))
 
-		database.performQuery(retrieveQuery) { result in
-			switch result {
-			case .success(let data):
-				XCTAssertEqual(data["0"], initialUser)
-			case .failure(let error):
-				XCTFail(error.localizedDescription)
-			}
-			expectation.fulfill()
-		}
-		wait(for: [expectation], timeout: 10)
+		let data = try await database.performQuery(retrieveQuery)
+		XCTAssertEqual(data["0"], initialUser)
 	}
 
 }

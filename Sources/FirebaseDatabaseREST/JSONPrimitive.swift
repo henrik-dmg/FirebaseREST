@@ -9,9 +9,7 @@ import AppKit
 #endif
 
 public protocol JSONPrimitive {
-
 	var queryRepresentation: String { get }
-
 }
 
 extension String: JSONPrimitive {

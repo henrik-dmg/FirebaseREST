@@ -9,11 +9,6 @@ struct EmailSignUpRequest: FirebaseAuthRequest {
 
 	let apiKey: String
 	let payload: EmailCredentials
-	let finishingQueue: DispatchQueue
-
-	var url: URL? {
-		URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=\(apiKey)")
-	}
 
 	var requestMethod: NetworkRequestMethod {
 		.post
@@ -24,11 +19,15 @@ struct EmailSignUpRequest: FirebaseAuthRequest {
 	}
 
 	var headerFields: [NetworkRequestHeaderField]? {
-		[.json]
+		[.contentTypeJSON]
 	}
 
 	var httpBody: Data? {
 		try? JSONEncoder().encode(payload)
+	}
+
+	func makeURL() throws -> URL {
+		URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=\(apiKey)")!
 	}
 
 }

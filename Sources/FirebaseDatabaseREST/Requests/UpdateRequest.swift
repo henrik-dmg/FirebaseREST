@@ -13,13 +13,8 @@ public struct UpdateRequest<E: Encodable>: DatabaseRequest {
 	let filter: DatabaseQueryFilter?
 	let encoder: JSONEncoder
 	let idToken: String?
-	public let finishingQueue: DispatchQueue
 
 	// MARK: - NetworkRequest
-
-	public var url: URL? {
-		makeURL(with: .silent)
-	}
 
 	public var httpBody: Data? {
 		try? encodeToJSON()
@@ -30,7 +25,11 @@ public struct UpdateRequest<E: Encodable>: DatabaseRequest {
 	}
 
 	public var headerFields: [NetworkRequestHeaderField]? {
-		[.json]
+		[.contentTypeJSON]
+	}
+
+	public func makeURL() throws -> URL {
+		try makeURL(with: .silent)
 	}
 
 	// MARK: - Init
@@ -41,8 +40,7 @@ public struct UpdateRequest<E: Encodable>: DatabaseRequest {
 		filter: DatabaseQueryFilter?,
 		value: E,
 		encoder: JSONEncoder,
-		idToken: String?,
-		finishingQueue: DispatchQueue
+		idToken: String?
 	) {
 		self.host = host
 		self.path = path
@@ -50,7 +48,6 @@ public struct UpdateRequest<E: Encodable>: DatabaseRequest {
 		self.value = value
 		self.encoder = encoder
 		self.idToken = idToken
-		self.finishingQueue = finishingQueue
 	}
 
 	// MARK: - Helper

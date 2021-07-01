@@ -20,15 +20,14 @@ public struct SaveQuery<E: Encodable>: DatabaseQuery {
 
 extension SaveQuery {
 
-	public func makeNetworkRequest(host: String, idToken: String?, finishingQueue: DispatchQueue) -> SaveRequest<E> {
+	public func makeNetworkRequest(host: String, idToken: String?) -> SaveRequest<E> {
 		SaveRequest(
 			host: host,
 			path: path,
 			filter: filter,
 			value: value,
 			encoder: encoder,
-			idToken: idToken,
-			finishingQueue: finishingQueue
+			idToken: idToken
 		)
 	}
 

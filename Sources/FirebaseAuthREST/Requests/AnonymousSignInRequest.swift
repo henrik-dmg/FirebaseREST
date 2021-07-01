@@ -13,10 +13,6 @@ struct AnonymousSignInRequest: FirebaseAuthRequest {
 
 	let apiKey: String
 
-	var url: URL? {
-		URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=\(apiKey)")
-	}
-
 	var decoder: JSONDecoder {
 		JSONDecoder()
 	}
@@ -26,11 +22,15 @@ struct AnonymousSignInRequest: FirebaseAuthRequest {
 	}
 
 	var headerFields: [NetworkRequestHeaderField]? {
-		[.json]
+		[.contentTypeJSON]
 	}
 
 	var httpBody: Data? {
 		"{\"returnSecureToken\":true}".data(using: .utf8)
+	}
+
+	func makeURL() throws -> URL {
+		URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=\(apiKey)")!
 	}
 
 }
