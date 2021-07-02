@@ -12,8 +12,8 @@ public struct DeleteRequest: DatabaseRequest {
 
 	public let finishingQueue: DispatchQueue
 
-	public var url: URL? {
-		makeURL(with: .silent)
+	public func makeURL() throws -> URL {
+		try makeURL(with: .silent)
 	}
 
 	public var requestMethod: NetworkRequestMethod {

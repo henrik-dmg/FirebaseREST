@@ -1,7 +1,7 @@
 import HPNetwork
 import Foundation
 
-protocol DatabaseRequest: NetworkRequest {
+protocol DatabaseRequest: DataRequest {
 
 	var host: String { get }
 	var path: DatabasePath { get }
@@ -16,24 +16,24 @@ enum PrintMode: String {
 
 extension DatabaseRequest {
 
-	func makeURL(with printMode: PrintMode) -> URL? {
+	func makeURL(with printMode: PrintMode) throws -> URL {
 		guard !path.components.isEmpty else {
-			return nil
+			throw NSError.unknown
 		}
 		let pathString = path.makeEscapedPath() + ".json"
 
 		var builder = URLBuilder(host: host)
 			.addingPathComponent(pathString)
-			.addingQueryItem(printMode.rawValue, name: "print")
+			.addingQueryItem(name: "print", value: printMode.rawValue)
 
 		filter.flatMap { $0 }?.generateQueryItems().forEach {
-			builder = builder.addingQueryItem($0.value, name: $0.name)
+			builder = builder.addingQueryItem(name: $0.name, value: $0.value)
 		}
 
 		if let token = idToken {
-			return builder.addingQueryItem(token, name: "auth").build()
+			return try builder.addingQueryItem(name: "auth", value: token).buildThrowing()
 		} else {
-			return builder.build()
+			return try builder.buildThrowing()
 		}
 	}
 

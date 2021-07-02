@@ -12,8 +12,8 @@ public struct RetrieveRequest<D: Decodable>: DatabaseRequest {
 	let idToken: String?
 	public let finishingQueue: DispatchQueue
 
-	public var url: URL? {
-		makeURL(with: .pretty)
+	public func makeURL() throws -> URL {
+		try makeURL(with: .silent)
 	}
 
 	public var requestMethod: NetworkRequestMethod {
@@ -36,7 +36,7 @@ public struct RetrieveRequest<D: Decodable>: DatabaseRequest {
 		self.finishingQueue = finishingQueue
 	}
 
-	public func convertResponse(response: NetworkResponse) throws -> Output {
+	public func convertResponse(response: DataResponse) throws -> D {
 		try validateBytes(response.data)
 		return try decoder.decode(D.self, from: response.data)
 	}

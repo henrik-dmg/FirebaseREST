@@ -17,8 +17,8 @@ public struct SaveRequest<E: Encodable>: DatabaseRequest {
 
 	// MARK: - NetworkRequest
 
-	public var url: URL? {
-		makeURL(with: .silent)
+	public func makeURL() throws -> URL {
+		try makeURL(with: .silent)
 	}
 
 	public var httpBody: Data? {
@@ -30,7 +30,7 @@ public struct SaveRequest<E: Encodable>: DatabaseRequest {
 	}
 
 	public var headerFields: [NetworkRequestHeaderField]? {
-		[.json]
+		[.contentTypeJSON]
 	}
 
 	// MARK: - Init

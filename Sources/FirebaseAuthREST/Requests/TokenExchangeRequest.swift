@@ -16,8 +16,8 @@ struct TokenExchangeRequest: FirebaseAuthRequest {
 	let token: String
 	let finishingQueue: DispatchQueue
 
-	var url: URL? {
-		URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=\(apiKey)")
+	func makeURL() throws -> URL {
+		URL(string: "https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=\(apiKey)")!
 	}
 
 	var requestMethod: NetworkRequestMethod {
@@ -29,7 +29,7 @@ struct TokenExchangeRequest: FirebaseAuthRequest {
 	}
 
 	var headerFields: [NetworkRequestHeaderField]? {
-		[.json]
+		[.contentTypeJSON]
 	}
 
 	var httpBody: Data? {

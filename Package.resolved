@@ -5,9 +5,9 @@
         "package": "HPNetwork",
         "repositoryURL": "https://github.com/henrik-dmg/HPNetwork",
         "state": {
-          "branch": null,
-          "revision": "3ade7d702fa00b392b0baab2a6bbf9e4d8e08616",
-          "version": "1.1.1"
+          "branch": "master",
+          "revision": "4417ccb356ec208e64975cf422e30c9a39976594",
+          "version": null
         }
       }
     ]
