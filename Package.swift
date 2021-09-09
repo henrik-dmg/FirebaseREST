@@ -25,7 +25,8 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-		.package(url: "https://github.com/henrik-dmg/HPNetwork", .branch("feature/async"))
+		.package(url: "https://github.com/henrik-dmg/HPNetwork", .branch("feature/async")),
+		.package(url: "https://github.com/henrik-dmg/HPURLBuilder", from: "1.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -37,6 +38,7 @@ let package = Package(
 			name: "FirebaseAuthREST",
 			dependencies: [
 				"HPNetwork",
+				"HPURLBuilder"
 			]
 		),
 		.testTarget(
@@ -50,6 +52,7 @@ let package = Package(
             name: "FirebaseDatabaseREST",
             dependencies: [
 				"HPNetwork",
+				"HPURLBuilder",
 				"FirebaseAuthREST"
 			]
 		),

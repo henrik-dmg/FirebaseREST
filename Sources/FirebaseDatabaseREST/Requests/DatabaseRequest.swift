@@ -1,4 +1,5 @@
 import HPNetwork
+import HPURLBuilder
 import Foundation
 
 protocol DatabaseRequest: DataRequest {
