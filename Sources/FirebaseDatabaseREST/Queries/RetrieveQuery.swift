@@ -18,14 +18,13 @@ public struct RetrieveQuery<D: Decodable>: DatabaseQuery {
 
 extension RetrieveQuery {
 
-	public func makeNetworkRequest(host: String, idToken: String?, finishingQueue: DispatchQueue) -> RetrieveRequest<D> {
+	public func makeNetworkRequest(host: String, idToken: String?) -> RetrieveRequest<D> {
 		RetrieveRequest(
 			host: host,
 			path: path,
 			filter: filter,
 			decoder: decoder,
-			idToken: idToken,
-			finishingQueue: finishingQueue
+			idToken: idToken
 		)
 	}
 

@@ -10,35 +10,25 @@ public struct RetrieveRequest<D: Decodable>: DatabaseRequest {
 	let filter: DatabaseQueryFilter?
 	let decoder: JSONDecoder
 	let idToken: String?
-	public let finishingQueue: DispatchQueue
-
-	public func makeURL() throws -> URL {
-		try makeURL(with: .silent)
-	}
-
-	public var requestMethod: NetworkRequestMethod {
-		.get
-	}
+	public let requestMethod = NetworkRequestMethod.get
 
 	init(
 		host: String,
 		path: DatabasePath,
 		filter: DatabaseQueryFilter?,
 		decoder: JSONDecoder,
-		idToken: String?,
-		finishingQueue: DispatchQueue
+		idToken: String?
 	) {
 		self.host = host
 		self.path = path
 		self.filter = filter
 		self.decoder = decoder
 		self.idToken = idToken
-		self.finishingQueue = finishingQueue
 	}
 
-	public func convertResponse(response: DataResponse) throws -> D {
-		try validateBytes(response.data)
-		return try decoder.decode(D.self, from: response.data)
+	public func convertResponse(data: Data, response: URLResponse) throws -> D {
+		try validateBytes(data)
+		return try decoder.decode(D.self, from: data)
 	}
 
 	private func validateBytes(_ data: Data) throws {
@@ -59,6 +49,10 @@ public struct RetrieveRequest<D: Decodable>: DatabaseRequest {
 				throw NSError(code: 69, description: "The returned data was empty")
 			}
 		}
+	}
+
+	public func makeURL() throws -> URL {
+		try makeURL(with: .pretty)
 	}
 
 }

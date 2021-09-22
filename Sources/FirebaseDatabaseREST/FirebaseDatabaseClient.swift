@@ -2,6 +2,7 @@ import Foundation
 import FirebaseAuthREST
 import HPNetwork
 
+@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 public final class FirebaseDatabaseClient {
 
 	public typealias TokenResult = (Result<EmailAuthResponse, Error>) -> Void
@@ -11,19 +12,17 @@ public final class FirebaseDatabaseClient {
 	let host: String
 
 	private let session: FirebaseAuthSession?
-	private let finishingQueue: DispatchQueue
 	private var emailCredentials: EmailCredentials?
 	private var lastToken: EmailAuthResponse?
 
 	// MARK: - Init
 
-	public init(host: String, apiKey: String?, emailCredentials: EmailCredentials? = nil, finishingQueue: DispatchQueue = .main) {
+	public init(host: String, apiKey: String?, emailCredentials: EmailCredentials? = nil) {
 		self.host = host
-		self.finishingQueue = finishingQueue
 		self.emailCredentials = emailCredentials
 
 		if let apiKey = apiKey {
-			self.session = FirebaseAuthSession(apiKey: apiKey, finishingQueue: finishingQueue)
+			self.session = FirebaseAuthSession(apiKey: apiKey)
 		} else {
 			self.session = nil
 		}
@@ -31,41 +30,34 @@ public final class FirebaseDatabaseClient {
 
 	// MARK: - User Change
 
-	public func authenticateNewUser(with credentials: EmailCredentials, completion: @escaping TokenResult) {
+	public func authenticateNewUser(with credentials: EmailCredentials, delegate: URLSessionDataDelegate? = nil) async throws -> EmailAuthResponse {
 		guard credentials != emailCredentials else {
-			refreshTokenIfNecessary(completion: completion)
-			return
+			return try await refreshTokenIfNecessary(delegate: delegate)
 		}
-		requestNewToken(for: credentials, completion: completion)
+		return try await requestNewToken(for: credentials, delegate: delegate)
 	}
 
 	// MARK: - Token Refreshing
 
-	private func refreshTokenIfNecessary(completion: @escaping TokenResult) {
+	private func refreshTokenIfNecessary(delegate: URLSessionDataDelegate? = nil) async throws -> EmailAuthResponse {
 		if let token = lastToken, !token.isExpired {
-			completion(.success(token))
-			return
+			return token
 		}
 
 		guard let credentials = emailCredentials else {
-			completion(.failure(NSError.noCredentialsError))
-			return
+			throw NSError.noCredentialsError
 		}
 
-		requestNewToken(for: credentials, completion: completion)
+		return try await requestNewToken(for: credentials, delegate: delegate)
 	}
 
-	private func requestNewToken(for credentials: EmailCredentials, completion: @escaping TokenResult) {
+	private func requestNewToken(for credentials: EmailCredentials, delegate: URLSessionDataDelegate? = nil) async throws -> EmailAuthResponse {
 		guard let session = session else {
-			completion(.failure(NSError.noSessionError))
-			return
+			throw NSError.noSessionError
 		}
-		session.signIn(with: credentials) { [weak self] result in
-			if case .success(let response) = result {
-				self?.lastToken = response
-			}
-			completion(result)
-		}
+		let response = try await session.signIn(with: credentials, delegate: delegate)
+		self.lastToken = response
+		return response
 	}
 
 	// MARK: - Obtaining Reference
@@ -74,27 +66,22 @@ public final class FirebaseDatabaseClient {
 		DatabasePath(components: [])
 	}
 
-}
 
-// MARK: - Querying
+	// MARK: - Querying
 
-extension FirebaseDatabaseClient {
-
-	public func performQuery<Query: DatabaseQuery>(_ query: Query, completion: @escaping (Result<Query.Request.Output, Error>) -> Void) {
+	public func performQuery<Query: DatabaseQuery>(_ query: Query, delegate: URLSessionDataDelegate? = nil) async throws -> Query.Request.Output {
 		let host = self.host
-		let queue = finishingQueue
-		refreshTokenIfNecessary { result in
-			switch result {
-			case .success(let response):
-				let request = query.makeNetworkRequest(host: host, idToken: response.idToken, finishingQueue: queue)
-				Network.shared.schedule(request: request, completion: completion)
-			case .failure(let error as NSError):
-				if error == NSError.noSessionError || error == NSError.noCredentialsError {
-					let request = query.makeNetworkRequest(host: host, idToken: nil, finishingQueue: queue)
-					Network.shared.schedule(request: request, completion: completion)
-				} else {
-					completion(.failure(error))
-				}
+
+		do {
+			let token = try await refreshTokenIfNecessary(delegate: delegate)
+			let request = query.makeNetworkRequest(host: host, idToken: token.idToken)
+			return try await request.response(delegate: delegate).output
+		} catch let error as NSError {
+			if error == NSError.noSessionError || error == NSError.noCredentialsError {
+				let request = query.makeNetworkRequest(host: host, idToken: nil)
+				return try await request.response(delegate: delegate).output
+			} else {
+				throw error
 			}
 		}
 	}

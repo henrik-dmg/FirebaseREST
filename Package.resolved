@@ -5,9 +5,18 @@
         "package": "HPNetwork",
         "repositoryURL": "https://github.com/henrik-dmg/HPNetwork",
         "state": {
-          "branch": "master",
-          "revision": "4417ccb356ec208e64975cf422e30c9a39976594",
-          "version": null
+          "branch": null,
+          "revision": "ba917f0cc4b60722c4bd285764745222b6bb7f00",
+          "version": "3.0.0"
+        }
+      },
+      {
+        "package": "HPURLBuilder",
+        "repositoryURL": "https://github.com/henrik-dmg/HPURLBuilder",
+        "state": {
+          "branch": null,
+          "revision": "07c13f18b13749963af735d1c6ca33b5c7807dc8",
+          "version": "1.0.1"
         }
       }
     ]

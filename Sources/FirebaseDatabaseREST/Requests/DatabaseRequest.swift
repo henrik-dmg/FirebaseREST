@@ -1,4 +1,5 @@
 import HPNetwork
+import HPURLBuilder
 import Foundation
 
 protocol DatabaseRequest: DataRequest {
@@ -18,22 +19,20 @@ extension DatabaseRequest {
 
 	func makeURL(with printMode: PrintMode) throws -> URL {
 		guard !path.components.isEmpty else {
-			throw NSError.unknown
+			throw NSError(code: 6, description: "Path components are empty")
 		}
 		let pathString = path.makeEscapedPath() + ".json"
 
-		var builder = URLBuilder(host: host)
-			.addingPathComponent(pathString)
-			.addingQueryItem(name: "print", value: printMode.rawValue)
+		return try URL.buildThrowing {
+			Host(host)
+			PathComponent(pathString)
+			QueryItem(name: "print", value: printMode.rawValue)
 
-		filter.flatMap { $0 }?.generateQueryItems().forEach {
-			builder = builder.addingQueryItem(name: $0.name, value: $0.value)
-		}
+			ForEach(filter?.generateQueryItems()) {
+				QueryItem(name: $0.name, value: $0.value)
+			}
 
-		if let token = idToken {
-			return try builder.addingQueryItem(name: "auth", value: token).buildThrowing()
-		} else {
-			return try builder.buildThrowing()
+			QueryItem(name: "auth", value: idToken)
 		}
 	}
 

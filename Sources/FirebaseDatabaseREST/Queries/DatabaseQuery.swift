@@ -8,6 +8,6 @@ public protocol DatabaseQuery {
 	var path: DatabasePath { get }
 	var filter: DatabaseQueryFilter? { get }
 
-	func makeNetworkRequest(host: String, idToken: String?, finishingQueue: DispatchQueue) -> Request
+	func makeNetworkRequest(host: String, idToken: String?) -> Request
 
 }
