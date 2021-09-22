@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "FirebaseREST",
 	platforms: [
-		.iOS(.v9), .macOS(.v10_11), .tvOS(.v9), .watchOS(.v3)
+		.iOS(.v15), .tvOS(.v15), .watchOS(.v8)
 	],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -25,7 +25,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-		.package(url: "https://github.com/henrik-dmg/HPNetwork", .branch("feature/async")),
+		.package(url: "https://github.com/henrik-dmg/HPNetwork", from: "3.0.0"),
 		.package(url: "https://github.com/henrik-dmg/HPURLBuilder", from: "1.0.0")
     ],
     targets: [
