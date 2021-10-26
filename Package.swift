@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "FirebaseREST",
 	platforms: [
-		.iOS(.v15), .tvOS(.v15), .watchOS(.v8)
+		.iOS(.v15), .tvOS(.v15), .watchOS(.v8), .macOS(.v12)
 	],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -41,19 +41,19 @@ let package = Package(
 				"HPURLBuilder"
 			]
 		),
-		.testTarget(
-			name: "FirebaseAuthRESTTests",
-			dependencies: [
-				"FirebaseAuthREST",
-				"TestFoundation"
-			]
-		),
 		.target(
             name: "FirebaseDatabaseREST",
             dependencies: [
 				"HPNetwork",
 				"HPURLBuilder",
 				"FirebaseAuthREST"
+			]
+		),
+		.testTarget(
+			name: "FirebaseAuthRESTTests",
+			dependencies: [
+				"FirebaseAuthREST",
+				"TestFoundation"
 			]
 		),
         .testTarget(
